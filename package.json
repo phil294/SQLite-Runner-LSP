@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/phil294/SQLite-Runner-LSP"
 	},
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "phil294",
 	"engines": {
 		"vscode": "^1.75.0"
