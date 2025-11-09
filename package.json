@@ -7,7 +7,7 @@
 		"url": "https://github.com/phil294/SQLite-Runner-LSP"
 	},
 	"version": "0.0.1",
-	"publisher": "sqlite-runner",
+	"publisher": "phil294",
 	"engines": {
 		"vscode": "^1.75.0"
 	},
@@ -22,6 +22,7 @@
 		"postinstall": "cd client && npm install && cd ../server && npm install"
 	},
 	"devDependencies": {
+		"npm-check-updates": "^19.1.2",
 		"ovsx": "^0.10.6",
 		"vsce": "^2.15.0"
 	}
