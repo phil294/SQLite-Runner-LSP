@@ -2,6 +2,8 @@
 
 A very simple VSCode extension (and LSP) that validates SQL files by running them against a temporary SQLite database in real-time.
 
+![demo showing parse error and syntax error](./demo/main.png)
+
 ## Usage
 
 1. You need to have `sqlite3` as a global executable available in your `$PATH`.
