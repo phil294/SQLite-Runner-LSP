@@ -34,7 +34,7 @@ run npx vsce verify-pat
 # pause
 
 : ''
-run npx ncu -u -x # '@types/vscode'
+run npx ncu -u # -x '@types/vscode'
 run npm i
 run git add package.json package-lock.json
 run git commit -m 'dependencies-upgrade'
@@ -60,20 +60,20 @@ pause
 # echo "$changes"
 
 version=$(npm version patch --no-git-tag-version)
-# version=v0.0.5
+# version=v0.0.2
 echo version: $version
 pause
 
 # ! [ -z "$changes" ] && \
 #     sed -i $'/<!-- CHANGELOG_PLACEHOLDER -->/r'<(echo $'\n### '${version} $(date +"%Y-%m-%d")$'\n\n'"$changes") CHANGELOG.md
 
-# run git add README.md package.json package-lock.json
+run git add package.json package-lock.json # README.md
 # ! [ -z "$changes" ] && \
 #     run git add CHANGELOG.md
-# run git commit -m "$version"
-# run git tag "$version"
-# echo 'patched package.json version patch, updated changelog, committed, tagged'
-# pause
+run git commit -m "$version"
+run git tag "$version"
+echo 'patched package.json version patch, updated changelog, committed, tagged'
+pause
 
 run npx vsce package
 vsix_file=$(ls -tr sqlite-runner-lsp-*.vsix* |tail -1)
