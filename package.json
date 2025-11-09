@@ -2,6 +2,7 @@
 	"name": "sqlite-runner-lsp",
 	"displayName": "SQLite Runner LSP",
 	"description": "Runs SQL files against SQLite and shows errors in real-time",
+	"icon": "icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/phil294/SQLite-Runner-LSP"
