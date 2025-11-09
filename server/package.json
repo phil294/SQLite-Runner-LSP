@@ -1,0 +1,14 @@
+{
+	"name": "sqlite-runner-lsp-server",
+	"description": "Language server for SQLite Runner LSP",
+	"version": "0.0.1",
+	"author": "sqlite-runner",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"dependencies": {
+		"vscode-languageserver": "^8.1.0",
+		"vscode-languageserver-textdocument": "^1.0.8"
+	}
+}

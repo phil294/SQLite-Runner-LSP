@@ -1,0 +1,24 @@
+{
+	"name": "sqlite-runner-lsp",
+	"displayName": "SQLite Runner LSP",
+	"description": "Runs SQL files against SQLite and shows errors in real-time",
+	"version": "0.0.1",
+	"publisher": "sqlite-runner",
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"activationEvents": [
+		"onLanguage:sql"
+	],
+	"main": "./client/extension.js",
+	"scripts": {
+		"postinstall": "cd client && npm install && cd ../server && npm install"
+	},
+	"devDependencies": {
+		"ovsx": "^0.10.6",
+		"vsce": "^2.15.0"
+	}
+}
