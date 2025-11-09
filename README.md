@@ -11,7 +11,7 @@ From the [VSCode Marketplace here](https://marketplace.visualstudio.com/items?it
 ## Usage
 
 1. You need to have `sqlite3` as a global executable available in your `$PATH`.
-1. Open any `.sql` or `.sqlite` file (they will be recognized as `sqlite` language)
+1. Open any `.sql` or `.sqlite` file
 1. Start writing SQL statements
 1. Errors will appear inline as you type
 
