@@ -1,7 +1,7 @@
 {
 	"name": "sqlite-runner-lsp-server",
 	"description": "Language server for SQLite Runner LSP",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"author": "sqlite-runner",
 	"license": "MIT",
 	"engines": {
