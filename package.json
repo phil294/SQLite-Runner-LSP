@@ -20,11 +20,11 @@
 	],
 	"main": "./client/extension.js",
 	"scripts": {
-		"postinstall": "cd client && npm install && cd ../server && npm install"
+		"postinstall": "cd client && echo 'installing in client' && npm install && cd ../server && echo 'installing in server' && npm install"
 	},
 	"devDependencies": {
 		"npm-check-updates": "^19.1.2",
 		"ovsx": "^0.10.6",
-		"vsce": "^2.15.0"
+		"vsce": "^1.97.0"
 	}
 }

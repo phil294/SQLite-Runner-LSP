@@ -41,8 +41,8 @@ cd ../client
 run npx ncu -u --cooldown 50
 cd ..
 run npm i
-run git add package.json package-lock.json
-run git commit -m 'dependencies-upgrade'
+run git add package.json package-lock.json server/package.json server/package-lock.json client/package.json client/package-lock.json
+run git commit -m 'dependencies-upgrade' || pause
 echo 'deps upgraded'
 pause
 # '
