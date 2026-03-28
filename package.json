@@ -23,8 +23,8 @@
 		"postinstall": "cd client && echo 'installing in client' && npm install && cd ../server && echo 'installing in server' && npm install"
 	},
 	"devDependencies": {
-		"npm-check-updates": "^19.1.2",
-		"ovsx": "^0.10.6",
-		"vsce": "^1.97.0"
+		"npm-check-updates": "19.1.2",
+		"ovsx": "0.10.6",
+		"@vscode/vsce": "3.7.1"
 	}
 }
