@@ -34,7 +34,12 @@ run npx vsce verify-pat
 # pause
 
 : ''
-run npx ncu -u # -x '@types/vscode'
+run npx ncu -u --cooldown 50 # -x '@types/vscode'
+cd server
+run npx ncu -u --cooldown 50
+cd ../client
+run npx ncu -u --cooldown 50
+cd ..
 run npm i
 run git add package.json package-lock.json
 run git commit -m 'dependencies-upgrade'
@@ -59,15 +64,23 @@ pause
 # echo changes:
 # echo "$changes"
 
-version=$(npm version patch --no-git-tag-version)
-# version=v0.0.2
+version_base=$(npm version patch --no-git-tag-version)
+cd server
+version_server=$(npm version patch --no-git-tag-version)
+cd ../client
+version_client=$(npm version patch --no-git-tag-version)
+cd ..
+if [[ "$version_base" != "$version_server" || "$version_base" != "$version_client" ]]; then
+    echo 'version mismatch'; exit 1
+fi
+
 echo version: $version
 pause
 
 # ! [ -z "$changes" ] && \
 #     sed -i $'/<!-- CHANGELOG_PLACEHOLDER -->/r'<(echo $'\n### '${version} $(date +"%Y-%m-%d")$'\n\n'"$changes") CHANGELOG.md
 
-run git add package.json package-lock.json # README.md
+run git add package.json package-lock.json server/package.json server/package-lock.json client/package.json client/package-lock.json # README.md
 # ! [ -z "$changes" ] && \
 #     run git add CHANGELOG.md
 run git commit -m "$version"

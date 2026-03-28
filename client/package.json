@@ -1,7 +1,7 @@
 {
 	"name": "sqlite-runner-lsp-client",
 	"description": "VSCode client for SQLite Runner LSP",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": "sqlite-runner",
 	"license": "MIT",
 	"engines": {
