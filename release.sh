@@ -64,13 +64,13 @@ pause
 # echo changes:
 # echo "$changes"
 
-version_base=$(npm version patch --no-git-tag-version)
+version=$(npm version patch --no-git-tag-version)
 cd server
 version_server=$(npm version patch --no-git-tag-version)
 cd ../client
 version_client=$(npm version patch --no-git-tag-version)
 cd ..
-if [[ "$version_base" != "$version_server" || "$version_base" != "$version_client" ]]; then
+if [[ "$version" != "$version_server" || "$version" != "$version_client" ]]; then
     echo 'version mismatch'; exit 1
 fi
 
