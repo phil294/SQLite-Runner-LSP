@@ -17,6 +17,8 @@ From the [VSCode Marketplace here](https://marketplace.visualstudio.com/items?it
 
 Each validation run creates a fresh temporary database, so you can test `CREATE TABLE` statements and other DDL without conflicts.
 
+The script is internally prefixed with `PRAGMA foreign_keys = "ON";` so foreign key errors will show by default.
+
 There are no configurable options.
 
 ## Development for VSCode extension

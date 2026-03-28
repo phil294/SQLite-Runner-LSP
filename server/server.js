@@ -96,7 +96,7 @@ documents.onDidChangeContent(change => {
 });
 
 async function validate_text_document(text_document) {
-	const text = text_document.getText();
+	const text = `PRAGMA foreign_keys = "ON"; ${text_document.getText()}`;
 	const diagnostics = [];
 
 	// Create temp database and SQL file
