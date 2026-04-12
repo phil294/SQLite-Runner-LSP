@@ -102,7 +102,7 @@ documents.onDidChangeContent(change => {
 	const timer = setTimeout(() => {
 		debounce_timers.delete(uri);
 		validate_text_document(change.document);
-	}, 80);
+	}, 150);
 	debounce_timers.set(uri, timer);
 });
 
