@@ -24,8 +24,7 @@ pause
 
 if ! [ -z "$(git status --porcelain)" ]; then
     echo 'git working tree not clean'
-    pause
-    # exit 1
+    exit 1
 fi
 
 run git push --tags origin master --dry-run
@@ -40,10 +39,14 @@ run npx ncu -u --cooldown 50
 cd ../client
 run npx ncu -u --cooldown 50
 cd ..
-run npm i
-run git add package.json package-lock.json server/package.json server/package-lock.json client/package.json client/package-lock.json
-run git commit -m 'dependencies-upgrade' || pause
-echo 'deps upgraded'
+if ! [ -z "$(git status --porcelain)" ]; then
+    run npm i
+    run git add package.json package-lock.json server/package.json server/package-lock.json client/package.json client/package-lock.json
+    run git commit -m 'dependencies-upgrade' || pause
+    echo 'deps upgraded'
+else
+    echo 'no deps upgraded'
+fi
 pause
 # '
 
