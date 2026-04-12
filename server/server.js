@@ -8,7 +8,7 @@ const {
 } = require('vscode-languageserver/node');
 
 const { TextDocument } = require('vscode-languageserver-textdocument');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -19,6 +19,7 @@ const documents = new TextDocuments(TextDocument);
 let has_configuration_capability = false;
 let has_workspace_folder_capability = false;
 let has_diagnostic_related_information_capability = false;
+let last_validation_process = null;
 
 connection.onInitialize((params) => {
 	const capabilities = params.capabilities;
@@ -96,72 +97,70 @@ documents.onDidChangeContent(change => {
 });
 
 async function validate_text_document(text_document) {
+	if (last_validation_process) {
+		last_validation_process.kill('SIGKILL');
+		last_validation_process = null;
+	}
+
 	const text = `PRAGMA foreign_keys = "ON"; ${text_document.getText()}`;
 	const diagnostics = [];
 
-	// Create temp database and SQL file
-	const temp_dir = os.tmpdir();
-	const temp_db = path.join(temp_dir, `sqlite_lsp_${Date.now()}_${Math.random().toString(36).substring(7)}.db`);
-	const temp_sql = path.join(temp_dir, `sqlite_lsp_${Date.now()}_${Math.random().toString(36).substring(7)}.sql`);
+	await new Promise((resolve) => {
+		const child = spawn('sqlite3', [':memory:']);
+		last_validation_process = child;
 
-	try {
-		fs.writeFileSync(temp_sql, text);
+		let stdout_data = '';
+		let stderr_data = '';
 
-		// Run sqlite3 CLI
-		await new Promise((resolve) => {
-			exec(`sqlite3 "${temp_db}" < "${temp_sql}"`, (error, stdout, stderr) => {
-				const output = stdout + stderr;
-
-				// Parse errors from output
-				// Format: "Parse error near line 231: near "do": syntax error"
-				// Format: "Runtime error near line 295: FOREIGN KEY constraint failed (19)"
-				const error_regex = /(Parse error|Runtime error|Error) near line (\d+): (.+)/g;
-				let match;
-
-				while ((match = error_regex.exec(output)) !== null) {
-					const error_type = match[1];
-					const line_number = parseInt(match[2]) - 1; // Convert to 0-indexed
-					const message = match[3].trim();
-
-					const lines = text.split('\n');
-					const line_text = lines[line_number] || '';
-
-					diagnostics.push({
-						severity: DiagnosticSeverity.Error,
-						range: {
-							start: { line: line_number, character: 0 },
-							end: { line: line_number, character: line_text.length }
-						},
-						message: `${error_type}: ${message}`,
-						source: 'sqlite-runner'
-					});
-				}
-
-				resolve();
-			});
+		child.stdout.on('data', (data) => {
+			stdout_data += data.toString();
 		});
-	} catch (error) {
-		// General error
-		diagnostics.push({
-			severity: DiagnosticSeverity.Error,
-			range: {
-				start: { line: 0, character: 0 },
-				end: { line: 0, character: 0 }
-			},
-			message: `Error: ${error.message}`,
-			source: 'sqlite-runner'
-		});
-	} finally {
-		// Cleanup temp files
-		try {
-			if (fs.existsSync(temp_db)) fs.unlinkSync(temp_db);
-			if (fs.existsSync(temp_sql)) fs.unlinkSync(temp_sql);
-		} catch (cleanup_error) {
-			// Ignore cleanup errors
-		}
-	}
 
-	connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
+		child.stderr.on('data', (data) => {
+			stderr_data += data.toString();
+		});
+
+		child.on('close', (code) => {
+			const output = stdout_data + stderr_data;
+
+			// Parse errors from output
+			// Format: "Parse error near line 231: near "do": syntax error"
+			// Format: "Runtime error near line 295: FOREIGN KEY constraint failed (19)"
+			const error_regex = /(Parse error|Runtime error|Error) near line (\d+): (.+)/g;
+			let match;
+
+			while ((match = error_regex.exec(output)) !== null) {
+				const error_type = match[1];
+				const line_number = parseInt(match[2]) - 1; // Convert to 0-indexed
+				const message = match[3].trim();
+
+				const lines = text.split('\n');
+				const line_text = lines[line_number] || '';
+
+				diagnostics.push({
+					severity: DiagnosticSeverity.Error,
+					range: {
+						start: { line: line_number, character: 0 },
+						end: { line: line_number, character: line_text.length }
+					},
+					message: `${error_type}: ${message}`,
+					source: 'sqlite-runner'
+				});
+			}
+
+			connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
+			resolve();
+		});
+
+		child.on('error', (error) => {
+			connection.sendDiagnostics({ uri: text_document.uri, diagnostics: [] });
+			resolve();
+		});
+
+		// Send SQL to stdin
+		child.stdin.write(text);
+		child.stdin.end();
+	});
 }
 
 connection.onDidChangeWatchedFiles(_change => {
