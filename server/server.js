@@ -115,7 +115,7 @@ async function validate_text_document(text_document) {
 				// Parse errors from output
 				// Format: "Parse error near line 231: near "do": syntax error"
 				// Format: "Runtime error near line 295: FOREIGN KEY constraint failed (19)"
-				const error_regex = /(Parse error|Runtime error) near line (\d+): (.+)/g;
+				const error_regex = /(Parse error|Runtime error|Error) near line (\d+): (.+)/g;
 				let match;
 
 				while ((match = error_regex.exec(output)) !== null) {
