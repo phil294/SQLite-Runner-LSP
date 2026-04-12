@@ -4,6 +4,8 @@ A very simple VSCode extension (and LSP) that validates SQL files by running the
 
 ![demo showing parse error and syntax error](./demo/main.png)
 
+Tested on Linux with SQLite 3.51-3.53 (2026-04). *Should* also work on Windows and MacOS - feedback welcome.
+
 ## Install
 
 From the [VSCode Marketplace here](https://marketplace.visualstudio.com/items?itemName=phil294.sqlite-runner-lsp) or from [Open VSIX here](https://open-vsx.org/extension/phil294/sqlite-runner-lsp).
