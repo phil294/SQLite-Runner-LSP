@@ -20,6 +20,7 @@ let has_configuration_capability = false;
 let has_workspace_folder_capability = false;
 let has_diagnostic_related_information_capability = false;
 let last_validation_process = null;
+const debounce_timers = new Map();
 
 connection.onInitialize((params) => {
 	const capabilities = params.capabilities;
@@ -90,10 +91,19 @@ function get_document_settings(resource) {
 
 documents.onDidClose(e => {
 	document_settings.delete(e.document.uri);
+	debounce_timers.delete(e.document.uri);
 });
 
 documents.onDidChangeContent(change => {
-	validate_text_document(change.document);
+	const uri = change.document.uri;
+	if (debounce_timers.has(uri)) {
+		clearTimeout(debounce_timers.get(uri));
+	}
+	const timer = setTimeout(() => {
+		debounce_timers.delete(uri);
+		validate_text_document(change.document);
+	}, 80);
+	debounce_timers.set(uri, timer);
 });
 
 async function validate_text_document(text_document) {
